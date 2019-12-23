@@ -1,4 +1,7 @@
+package shamir;
+
 import org.junit.jupiter.api.Test;
+import shamir.Share;
 
 import java.math.BigInteger;
 

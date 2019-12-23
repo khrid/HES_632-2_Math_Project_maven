@@ -1,3 +1,5 @@
+package shamir;
+
 import java.math.BigInteger;
 
 public class Share {
@@ -11,7 +13,7 @@ public class Share {
 
     @Override
     public String toString() {
-        return "Share{" +
+        return "shamir.Share{" +
                 "x=" + x +
                 ", y=" + y +
                 '}';

@@ -1,3 +1,7 @@
+package tools;
+
+import shamir.Share;
+
 import java.math.BigInteger;
 
 public final class Math {
@@ -12,7 +16,6 @@ public final class Math {
         return rv;
     }
 
-    // TODO refactor selon commentaire de Jean Luc
     public static BigInteger EEA(BigInteger a, BigInteger b) {
         BigInteger[] r = new BigInteger[99];
         BigInteger[] q = new BigInteger[99];
@@ -29,18 +32,11 @@ public final class Math {
         int i = 0;
         while (!BigInteger.ZERO.equals(r[i + 1])) {
             i++;
-            //q[i] = (r[i-1]/r[i]);
             q[i] = r[i - 1].divide(r[i]);
-            //r[i+1] = r[i-1] -  q[i]*r[i];
             r[i + 1] = r[i - 1].subtract((q[i].multiply(r[i])));
-            //x[i+1] = x[i-1]-q[i]*x[i];
             x[i + 1] = x[i - 1].subtract((q[i].multiply(x[i])));
-            //y[i+1] = y[i-1]-q[i]*y[i];
             y[i + 1] = y[i - 1].subtract((q[i].multiply(y[i])));
-            //System.out.println("a -> "+r[i-1]+" // b -> "+r[i]);
         }
-        //System.out.print("eea with "+a+" and "+b);
-        //System.out.println(" -> equals : r "+r[i]+" x "+x[i]+" y "+y[i]);
         return y[i].mod(a);
     }
 }

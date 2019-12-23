@@ -1,3 +1,7 @@
+package shamir;
+
+import tools.Math;
+
 import java.math.BigInteger;
 import java.security.SecureRandom;
 import java.util.Random;
@@ -24,7 +28,7 @@ public class ShamirSecret {
         }
 
         if (_seuil > _nombreDeParts) {
-            throw new Exception("Le seuil (" + seuil + ") ne peut excéder le nombre de parts (" + nombreDeParts + ")");
+            throw new Exception("Le seuil (" + _seuil + ") ne peut excéder le nombre de parts (" + _nombreDeParts + ")");
         }
 
         if (_nombreDeParts <= 1) {
@@ -73,12 +77,9 @@ public class ShamirSecret {
         tmp[0] = secret;
         for (int i = 1; i < seuil; i++) {
             BigInteger r;
-            while (true) {
+            do {
                 r = new BigInteger(p.bitLength(), random);
-                if (r.compareTo(BigInteger.ZERO) > 0 && r.compareTo(p) < 0) {
-                    break;
-                }
-            }
+            } while (r.compareTo(BigInteger.ZERO) <= 0 || r.compareTo(p) >= 0);
             tmp[i] = r;
         }
 
@@ -93,23 +94,25 @@ public class ShamirSecret {
         return shares;
     }
 
-    public BigInteger combine(int x, Share[] shares, BigInteger p) {
-        BigInteger rv = BigInteger.ZERO;
-        for (int i = 0; i < shares.length; i++) {
-            rv = rv.add(shares[i].y.multiply(Math.l(x, shares, i, p)));
-
-            //System.out.println(rv);
+    public BigInteger combine(int x, Share[] shares, BigInteger p) throws Exception {
+        if (shares.length == seuil) {
+            BigInteger rv = BigInteger.ZERO;
+            for (int i = 0; i < shares.length; i++) {
+                rv = rv.add(shares[i].y.multiply(Math.l(x, shares, i, p)));
+            }
+            return rv.mod(p);
+        } else {
+            throw new Exception("Pas assez de parts pour reconstruire le secret");
         }
-        return rv.mod(p);
     }
 
-    public ShamirSecret genererNouvellePart() {
+    public ShamirSecret genererNouvellePart() throws Exception {
         if (nombreDeParts < MAX_SHARES) {
             System.out.println("Secret partagé en " + nombreDeParts + ", ajout d'une nouvelle part.");
 
             nombreDeParts += 1;
         } else {
-            System.out.println("Nombre maximale de part atteint.");
+            throw new Exception("Nombre maximale de part atteint.");
         }
         return this;
     }
@@ -121,12 +124,12 @@ public class ShamirSecret {
             if (nombreDeParts - 1 > 2) {
                 System.out.println("Secret partagé en " + nombreDeParts + ", retrait d'une part.");
                 nombreDeParts -= 1;
+                return this;
             } else {
-                System.out.println("Plus assez de parts à retirer.");
+                throw new Exception("Plus assez de parts à retirer.");
             }
         } else {
-            System.out.println("Le nombre de parts ne peut pas être inférieur au seuil.");
+            throw new Exception("Le nombre de parts ne peut pas être inférieur au seuil.");
         }
-        return this;
     }
 }
