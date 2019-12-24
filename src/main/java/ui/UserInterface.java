@@ -1,6 +1,7 @@
 package ui;
 
 import com.google.gson.Gson;
+import com.google.gson.GsonBuilder;
 import com.google.gson.stream.JsonReader;
 import shamir.ShamirSecret;
 import shamir.Share;
@@ -19,8 +20,9 @@ public class UserInterface {
     int selection;
     private ShamirSecret shamirSecret;
 
-    public static final String METADATA_LOCATION = "C:\\tmp\\shamir\\metadata.json";
-    public static final String SHARES_LOCATION = "C:\\tmp\\shamir\\shares.json";
+    public static final String BASE_DIR = "/tmp/shamir";
+    public static final String METADATA_LOCATION = BASE_DIR+"/metadata.json";
+    public static final String SHARES_LOCATION = BASE_DIR+"/shares.json";
 
 
     private void loadExistingMedata() throws Exception {
@@ -32,10 +34,16 @@ public class UserInterface {
     }
 
     public void start() throws Exception {
-
         System.out.println("======================================================");
         System.out.println("\t Projet Math | David Crittin & Sylvain Meyer");
         System.out.println("======================================================");
+        if(!Files.exists(Paths.get(BASE_DIR))) {
+            if (!new File(BASE_DIR).mkdir()) {
+                System.out.println("Impossible de créer les répertoires.");
+                return;
+            }
+        }
+
         if (Files.exists(Paths.get(METADATA_LOCATION))) {
             loadExistingMedata();
         }
@@ -100,7 +108,7 @@ public class UserInterface {
         do {
             System.out.print("Nombre de parts pour reconstituer le secret (1 < n <= " + nombreDeParts + ") : ");
             seuil = scanner.nextInt();
-        } while (seuil > nombreDeParts || seuil < 1);
+        } while (seuil > nombreDeParts || seuil <= 1);
 
         shamirSecret = new ShamirSecret(tailleSecret, seuil, nombreDeParts);
         saveShamir();
@@ -194,12 +202,12 @@ public class UserInterface {
         }
 
         try (FileWriter writer = new FileWriter(new File(METADATA_LOCATION))) {
-            new Gson().toJson(shamirSecret, writer);
+            new GsonBuilder().setPrettyPrinting().create().toJson(shamirSecret, writer);
             writer.flush();
             System.out.println("Métadonnées enregistrées.");
         }
         try (FileWriter writer = new FileWriter(new File(SHARES_LOCATION))) {
-            new Gson().toJson(partsDuSecret, writer);
+            new GsonBuilder().setPrettyPrinting().create().toJson(partsDuSecret, writer);
             writer.flush();
             System.out.println("Parts du secret enregistrées.");
         }
