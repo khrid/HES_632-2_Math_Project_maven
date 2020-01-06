@@ -7,7 +7,7 @@ import java.math.BigInteger;
 public final class Math {
     /**
      * Permet la reconstruction du secret
-     * @param x la part cible ( => 0)
+     * @param x la part cible ( = 0)
      * @param shares les parts connues
      * @param i la part en cours
      * @param p pour le modulo

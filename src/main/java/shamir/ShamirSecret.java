@@ -132,7 +132,7 @@ public class ShamirSecret {
 
     /**
      * Permet de mettre ensemble des parts pour reconstruire le secret
-     * @param x la part cible ( => 0)
+     * @param x la part cible ( = 0)
      * @param shares les parts connues
      * @param p le nextProbablePrime du secret
      * @return le secret
