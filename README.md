@@ -1,6 +1,6 @@
 ## 632-2 Math project - Shamir's secret sharing
 
-:construction: Work in progress :construction:
+[Link to documentation](rapport.md)
 
 ### Students
 * [David Crittin](mailto:david.crittin@students.hevs.ch)
