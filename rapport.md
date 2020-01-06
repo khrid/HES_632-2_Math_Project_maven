@@ -1,6 +1,14 @@
 # Rapport du projet
 
 ## Description de la bibliothèque mathématique
+La bibliothèque mathématique se trouve dans le fichier suivant.
+~~~
+src/main/java/tools/Math.java
+~~~
+
+Elle contient les deux méthodes suivantes :
+* _l_, pour la reconstruction du secret,
+* _EEA_, qui correspond à notre implémentation de l'_Extended Euclidian Algorithm_, à savoir l'inverse multiplicatif.
 
 ## Guide de l'utilisateur
 Le programme offre plusieurs possiblités à son lancement.
@@ -37,7 +45,10 @@ Cette option permet de retirer une part à un partage de secret, selon les restr
 Cette option permet de changer le seuil de parts nécessaires pour reconstruire le secret. Le nouveau seuil ne peut pas être supérieur aux nombres de parts actuelles.
 
 ## Metadonnées
-Deux fichiers .json de métadonnées sont enregistrés dans C:\tmp\shamir (ou /tmp/shamir).
+Deux fichiers .json de métadonnées sont enregistrés dans 
+~~~
+C:\tmp\shamir (ou /tmp/shamir pour Unix)
+~~~
 * _metadata.json_, qui contient diverses métadonnées nécessaires pour les opérations sur le secret.
   * le secret,
   * le "p",
