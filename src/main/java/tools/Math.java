@@ -5,6 +5,14 @@ import shamir.Share;
 import java.math.BigInteger;
 
 public final class Math {
+    /**
+     * Permet la reconstruction du secret
+     * @param x la part cible ( => 0)
+     * @param shares les parts connues
+     * @param i la part en cours
+     * @param p pour le modulo
+     * @return la valeur calculée pour la part
+     */
     public static BigInteger l(int x, Share[] shares, int i, BigInteger p) {
         BigInteger rv = BigInteger.ONE;
         for (int m = 0; m <= shares.length - 1; m++) {
@@ -16,7 +24,14 @@ public final class Math {
         return rv;
     }
 
-    public static BigInteger EEA(BigInteger a, BigInteger b) {
+    /**
+     * Extended Euclidian Algorithm
+     * @param a la première valeur
+     * @param b la seconde valeur
+     * @return l'inverse multiplicatif
+     */
+    static BigInteger EEA(BigInteger a, BigInteger b) {
+        // TODO intégrer la sliding window selon indications de Jean-Luc
         BigInteger[] r = new BigInteger[99];
         BigInteger[] q = new BigInteger[99];
         BigInteger[] x = new BigInteger[99];

@@ -16,15 +16,18 @@ import java.util.Scanner;
 
 public class UserInterface {
 
-    Scanner scanner = new Scanner(System.in);
-    int selection;
+    private Scanner scanner = new Scanner(System.in);
+    private int selection;
     private ShamirSecret shamirSecret;
 
-    public static final String BASE_DIR = "/tmp/shamir";
-    public static final String METADATA_LOCATION = BASE_DIR+"/metadata.json";
-    public static final String SHARES_LOCATION = BASE_DIR+"/shares.json";
+    private static final String BASE_DIR = "/tmp/shamir";
+    private static final String METADATA_LOCATION = BASE_DIR+"/metadata.json";
+    private static final String SHARES_LOCATION = BASE_DIR+"/shares.json";
 
-
+    /**
+     * Charge les métadonnées depuis une précédente exécution.
+     * @throws Exception en cas de problème lors de la lecture du fichier de métadonnées
+     */
     private void loadExistingMedata() throws Exception {
         System.out.println(" /!\\ Metadonnées trouvées, secret reconstructible /!\\");
         System.out.println("------------------------------------------------------");
@@ -33,13 +36,17 @@ public class UserInterface {
         shamirSecret = gson.fromJson(reader, ShamirSecret.class);
     }
 
+    /**
+     * Affiche les interactions possibles avec l'utilisateur
+     * @throws Exception en cas de problème lors de la création des répertoires
+     */
     public void start() throws Exception {
         System.out.println("======================================================");
         System.out.println("\t Projet Math | David Crittin & Sylvain Meyer");
         System.out.println("======================================================");
         if(!Files.exists(Paths.get(BASE_DIR))) {
             if (!new File(BASE_DIR).mkdir()) {
-                System.out.println("Impossible de créer les répertoires.");
+                System.out.println("Impossible de créer les répertoires. Merci de les créer manuellement (C:"+BASE_DIR+" ou "+BASE_DIR+")");
                 return;
             }
         }
@@ -93,7 +100,11 @@ public class UserInterface {
         } while (selection != 0);
     }
 
-    public void genererSecret() throws Exception {
+    /**
+     * Démarre le processus utilisateur pour la création d'un nouveau secret
+     * @throws Exception en cas de problème lors de la création d'une nouvelle part
+     */
+    private void genererSecret() throws Exception {
         int tailleSecret, seuil, nombreDeParts;
         do {
             System.out.print("Taille du secret (" + ShamirSecret.MIN_SECRET_SIZE + " <= n <= " + ShamirSecret.MAX_SECRET_SIZE + ") : ");
@@ -114,6 +125,9 @@ public class UserInterface {
         saveShamir();
     }
 
+    /**
+     * Démarrer le processus utilisateur pour la reconstruction d'un secret
+     */
     private void calculerSecret() {
         if (shamirSecret != null) {
             Scanner scanner = new Scanner(System.in);
@@ -149,6 +163,9 @@ public class UserInterface {
         }
     }
 
+    /**
+     * Démarrer le processus utilisateur pour la génération d'une nouvelle part
+     */
     private void genererNouvellePart() {
         if (shamirSecret != null) {
             try {
@@ -162,6 +179,9 @@ public class UserInterface {
         }
     }
 
+    /**
+     * Démarrer le processus utilisateur pour le retrait d'une part
+     */
     private void enleverPart() {
         if (shamirSecret != null) {
             try {
@@ -175,6 +195,10 @@ public class UserInterface {
         }
     }
 
+    /**
+     * Démarrer le processus utilisateur pour le changement du seuil
+     * @throws Exception en cas de problème lors du changement de seuil
+     */
     private void changementSeuil() throws Exception {
         if (shamirSecret != null) {
             Scanner scanner = new Scanner(System.in);
@@ -193,6 +217,10 @@ public class UserInterface {
         }
     }
 
+    /**
+     * Enregistre l'instance courante de l'objet ShamirSecret dans un fichier de métadonnées, ainsi que les parts du secret.
+     * @throws Exception en cas de problème lors de l'écriture des fichiers
+     */
     private void saveShamir() throws Exception {
         Share[] partsDuSecret = shamirSecret.split(shamirSecret.getSecret(), shamirSecret.getSeuil(), shamirSecret.getNombreDeParts(), shamirSecret.getP());
         System.out.println("Parts du secret : ");

@@ -18,6 +18,13 @@ public class ShamirSecret {
     private int seuil;
     private int nombreDeParts;
 
+    /**
+     *
+     * @param _tailleSecret la taille du secret (entre MIN_SECRET_SIZE et MAX_SECRET_SIZE)
+     * @param _seuil le nombre de parts minimale (entre 2 et _nombreDeParts)
+     * @param _nombreDeParts le nombre de parts totales du secret
+     * @throws Exception en cas de problème avec la saisie utilisateur
+     */
     public ShamirSecret(int _tailleSecret, int _seuil, int _nombreDeParts) throws Exception {
         if (_tailleSecret > MAX_SECRET_SIZE) {
             throw new Exception("Taille du secret trop élevée (<= " + MAX_SECRET_SIZE + ")");
@@ -42,33 +49,62 @@ public class ShamirSecret {
         genererSecret();
     }
 
+    /**
+     * Permet d'obtenir le secret
+     * @return le secret
+     */
     public BigInteger getSecret() {
         return secret;
     }
 
+    /**
+     * Permet d'obtenir le nextProbablePrime calculé initialement
+     * @return le p
+     */
     public BigInteger getP() {
         return p;
     }
 
+    /**
+     * Permet d'obtenir le seuil de parts nécessaires à la reconstruction du secret
+     * @return le nombre de parts nécessaires
+     */
     public int getSeuil() {
         return seuil;
     }
 
+    /**
+     * Permet d'obtenir le nombre de parts totales
+     * @return le nombre de parts
+     */
     public int getNombreDeParts() {
         return nombreDeParts;
     }
 
+    /**
+     * Permet d'obtenir la taille du secret
+     * @return la taille du secret
+     */
     public int getTailleSecret() {
         return tailleSecret;
     }
 
+    /**
+     * Génère le secret et sauve le nextProbablePrime relatif
+     */
     private void genererSecret() {
         secret = BigInteger.probablePrime(tailleSecret, new SecureRandom());
         p = secret.nextProbablePrime();
-        //System.out.println("secret : "+secret);
     }
 
-
+    /**
+     * Permet de split le secret
+     * @param secret le secret à splitter
+     * @param seuil le nombre de parts nécessaires pour reconstruire le secret
+     * @param nombreDeParts le nombre de parts en lequel le secret doit être splitté
+     * @param p le nextProbablePrime relatif au secret
+     * @return un tableau de Share contenant les coordonnées des parts
+     */
     public Share[] split(BigInteger secret, int seuil, int nombreDeParts, BigInteger p) {
         Share[] shares = new Share[nombreDeParts];
         Random random = new SecureRandom();
@@ -94,6 +130,14 @@ public class ShamirSecret {
         return shares;
     }
 
+    /**
+     * Permet de mettre ensemble des parts pour reconstruire le secret
+     * @param x la part cible ( => 0)
+     * @param shares les parts connues
+     * @param p le nextProbablePrime du secret
+     * @return le secret
+     * @throws Exception en cas de problème lors de la reconstruction du secret
+     */
     public BigInteger combine(int x, Share[] shares, BigInteger p) throws Exception {
         if (shares.length == seuil) {
             BigInteger rv = BigInteger.ZERO;
@@ -106,6 +150,11 @@ public class ShamirSecret {
         }
     }
 
+    /**
+     * Permet de générer une nouvelle part
+     * @return soi même
+     * @throws Exception en cas de problème lors de la génération d'une nouvelle part
+     */
     public ShamirSecret genererNouvellePart() throws Exception {
         if (nombreDeParts < MAX_SHARES) {
             System.out.println("Secret partagé en " + nombreDeParts + ", ajout d'une nouvelle part.");
@@ -117,6 +166,11 @@ public class ShamirSecret {
         return this;
     }
 
+    /**
+     * Permet de retirer une part
+     * @return soi même
+     * @throws Exception en cas de problème lors du retrait d'une part
+     */
     public ShamirSecret enleverPart() throws Exception {
         // on ne doit pas avoir moins de parts que le seuil
         if (nombreDeParts - 1 >= seuil) {

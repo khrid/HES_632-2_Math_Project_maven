@@ -1,23 +1,22 @@
 package shamir;
 
 import org.junit.jupiter.api.Test;
-import shamir.Share;
 
 import java.math.BigInteger;
 
-import static org.junit.jupiter.api.Assertions.*;
+import static org.junit.jupiter.api.Assertions.assertEquals;
 
-public class TestShare {
+class TestShare {
 
     @Test
-    public void testNewShare() {
-        Share share = new Share(1, BigInteger.TWO);
+    void testNewShare() {
+        Share share = new Share(1, BigInteger.valueOf(2));
         assertEquals(1, share.x);
-        assertEquals(BigInteger.TWO, share.y);
+        assertEquals(BigInteger.valueOf(2), share.y);
     }
 
     @Test
-    public void testYisBigInteger() {
+    void testYisBigInteger() {
         Share share = new Share(1, BigInteger.TEN);
         assertEquals(BigInteger.class, share.y.getClass());
     }
