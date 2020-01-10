@@ -157,16 +157,16 @@ public class UserInterface {
 
             if (secretReconstruit != null) {
                 try {
-                    if (secret.equals(secretReconstruit)) {
-                        System.out.println("Secret reconstruit avec succès !");
-                        System.out.println("\t" + secret);
-                    } else {
-                        System.out.println("\t" + secretReconstruit);
-                        System.out.println("\t" + secret);
-                        System.out.println("Impossible de reconstruire le secret.");
-                    }
+                    //if (secret.equals(secretReconstruit)) {
+                    //    System.out.println("Secret reconstruit avec succès !");
+                    //    System.out.println("\t" + secret);
+                    //} else {
+                    //    System.out.println("Impossible de reconstruire le secret.");
+                    //}
+                    // on ne doit pas contrôler si les parts sont correctes. L'utilisateur le verra lorsqu'il voudra
+                    // employer le secret. Mais pour être sûr on l'affiche quand même :)
+                    System.out.println("Secret : "+secretReconstruit + " ("+secret+")");
                 } catch (Exception e) {
-                    System.out.println(e.getMessage());
                     System.out.println("Impossible de reconstruire le secret.");
                 }
             }
