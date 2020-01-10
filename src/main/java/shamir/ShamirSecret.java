@@ -8,11 +8,11 @@ import java.util.Random;
 
 public class ShamirSecret {
 
-    public static final int MAX_SECRET_SIZE = 256;
+    public static final int MAX_SECRET_SIZE = 4096;
     public static final int MIN_SECRET_SIZE = 8;
     public static final int MAX_SHARES = 32;
 
-    private BigInteger secret;
+    private transient BigInteger secret;
     private BigInteger p;
     private int tailleSecret; // en bit
     private int seuil;
@@ -139,7 +139,7 @@ public class ShamirSecret {
      * @throws Exception en cas de problème lors de la reconstruction du secret
      */
     public BigInteger combine(int x, Share[] shares, BigInteger p) throws Exception {
-        if (shares.length == seuil) {
+        if (shares.length >= seuil) {
             BigInteger rv = BigInteger.ZERO;
             for (int i = 0; i < shares.length; i++) {
                 rv = rv.add(shares[i].y.multiply(Math.l(x, shares, i, p)));

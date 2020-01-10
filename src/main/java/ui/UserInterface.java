@@ -19,6 +19,8 @@ public class UserInterface {
     private Scanner scanner = new Scanner(System.in);
     private int selection;
     private ShamirSecret shamirSecret;
+    private Share[] sharesFromMetadata;
+    private BigInteger secret;
 
     private static final String BASE_DIR = "/tmp/shamir";
     private static final String METADATA_LOCATION = BASE_DIR+"/metadata.json";
@@ -34,6 +36,9 @@ public class UserInterface {
         Gson gson = new Gson();
         JsonReader reader = new JsonReader(new FileReader(METADATA_LOCATION));
         shamirSecret = gson.fromJson(reader, ShamirSecret.class);
+        reader = new JsonReader(new FileReader(SHARES_LOCATION));
+        sharesFromMetadata = gson.fromJson(reader, Share[].class);
+        secret = shamirSecret.combine(0, sharesFromMetadata, shamirSecret.getP());
     }
 
     /**
@@ -151,10 +156,17 @@ public class UserInterface {
             }
 
             if (secretReconstruit != null) {
-                if (secretReconstruit.equals(shamirSecret.getSecret())) {
-                    System.out.println("Secret reconstruit avec succès !");
-                    System.out.println("\t" + shamirSecret.getSecret());
-                } else {
+                try {
+                    if (secret.equals(secretReconstruit)) {
+                        System.out.println("Secret reconstruit avec succès !");
+                        System.out.println("\t" + secret);
+                    } else {
+                        System.out.println("\t" + secretReconstruit);
+                        System.out.println("\t" + secret);
+                        System.out.println("Impossible de reconstruire le secret.");
+                    }
+                } catch (Exception e) {
+                    System.out.println(e.getMessage());
                     System.out.println("Impossible de reconstruire le secret.");
                 }
             }
